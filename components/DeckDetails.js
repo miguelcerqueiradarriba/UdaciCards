@@ -1,8 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, Text, View, TouchableOpacity} from "react-native";
 
 class DeckDetails extends React.Component {
+
     render() {
+        const { navigate } = this.props.navigation;
         return (
             <View style={styles.detailContainer}>
                 <View style={styles.titleContainer}>
@@ -10,12 +12,12 @@ class DeckDetails extends React.Component {
                     <Text style={styles.deckSubtitle}>3 cards</Text>
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <View style={styles.addCardButton}>
+                    <TouchableOpacity onPress={() => navigate('AddCard')} style={styles.addCardButton}>
                         <Text style={styles.addCardText}>Add Card</Text>
-                    </View>
-                    <View style={styles.startQuizButton}>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigate('Card')} style={styles.startQuizButton}>
                         <Text style={styles.startQuizText}>Start Quiz</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         )

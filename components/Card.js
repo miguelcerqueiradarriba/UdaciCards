@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         fontSize: 50,
         margin: 5
     },
-    titleInput: {
+    deckSubtitle: {
         textAlign: 'center',
         color: 'red',
         fontSize: 20,

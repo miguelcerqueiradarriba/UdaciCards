@@ -1,18 +1,36 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, View} from "react-native";
+import {StyleSheet, Text, TextInput, View, AsyncStorage, TouchableOpacity} from "react-native";
 
 class NewDeck extends React.Component {
+
+    state = {
+        deckTitle: 'Deck title'
+    };
+
+    saveDeck() {
+        AsyncStorage.getItem('decks', (results) => {
+            const decks = JSON.parse(results);
+            const deck = {
+                title: this.state.deckTitle
+            };
+            decks.push(deck);
+            AsyncStorage.setItem('decks', decks);
+        });
+    }
+
     render() {
         return (
             <View style={styles.detailContainer}>
                 <View style={styles.titleContainer}>
                     <Text style={styles.deckTitle}>What is the title of your new deck?</Text>
-                    <TextInput style={styles.titleInput} value={'Deck title'}></TextInput>
+                    <TextInput style={styles.titleInput} onChange={(element) => this.setState({
+                        deckTitle: element.value
+                    })} value={this.state.deckTitle}></TextInput>
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <View style={styles.submitButton}>
+                    <TouchableOpacity onChange={() => this.saveDeck()} style={styles.submitButton}>
                         <Text style={styles.submitText}>Submit</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         )

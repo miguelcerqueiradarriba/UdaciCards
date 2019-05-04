@@ -1,13 +1,16 @@
 import React from 'react'
-import {Text, View, StyleSheet} from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
 
 class Deck extends React.Component {
+
     render() {
         return (
-            <View style={styles.deckContainer}>
-                <Text style={styles.deckTitle}>Ula</Text>
-                <Text style={styles.deckSubtitle}>Ula</Text>
-            </View>
+            <TouchableOpacity style={styles.deckContainer}
+                onPress={() => this.props.navigate('DeckDetails')}
+            >
+                <Text style={styles.deckTitle}>{this.props.deck.title}</Text>
+                <Text style={styles.deckSubtitle}>{this.props.deck.questions.length} cards</Text>
+            </TouchableOpacity>
         )
     }
 }
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
     deckTitle: {
         fontSize: 20
     },
-    titleInput: {
+    deckSubtitle: {
         color: 'lightgray',
         fontSize: 15
     }
