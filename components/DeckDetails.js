@@ -5,17 +5,18 @@ class DeckDetails extends React.Component {
 
     render() {
         const { navigate } = this.props.navigation;
+        const deck = this.props.navigation.getParam('deck', {});
         return (
             <View style={styles.detailContainer}>
                 <View style={styles.titleContainer}>
-                    <Text style={styles.deckTitle}>udacicards</Text>
-                    <Text style={styles.deckSubtitle}>3 cards</Text>
+                    <Text style={styles.deckTitle}>{deck.title}</Text>
+                    <Text style={styles.deckSubtitle}>{deck.questions.length} cards</Text>
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity onPress={() => navigate('AddCard')} style={styles.addCardButton}>
+                    <TouchableOpacity onPress={() => navigate('AddCard', {deck: deck})} style={styles.addCardButton}>
                         <Text style={styles.addCardText}>Add Card</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigate('Card')} style={styles.startQuizButton}>
+                    <TouchableOpacity onPress={() => navigate('Card', {deck: deck})} style={styles.startQuizButton}>
                         <Text style={styles.startQuizText}>Start Quiz</Text>
                     </TouchableOpacity>
                 </View>

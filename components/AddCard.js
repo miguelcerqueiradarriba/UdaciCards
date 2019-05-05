@@ -1,18 +1,44 @@
 import React from 'react'
-import {StyleSheet, Text, TextInput, View} from "react-native";
+import {AsyncStorage, Picker, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {connect} from "react-redux";
+import {handleUpdateDeck, updateDeck} from "../actions/DeckActions";
 
 class AddCard extends React.Component {
+
+    state = {
+        question: 'Question',
+        answer: 'Answer',
+        isCorrect: true
+    };
+
+    addCard() {
+        const deck = this.props.navigation.getParam('deck', {});
+        this.props.dispatch(handleUpdateDeck(deck));
+    }
+
     render() {
         return (
             <View style={styles.detailContainer}>
                 <View style={styles.titleContainer}>
-                    <TextInput style={styles.titleInput} value={'What is a component?'}></TextInput>
-                    <TextInput style={styles.titleInput} value={'Components let you split the UI into dependent, reusable pieces'}></TextInput>
+                    <TextInput style={styles.titleInput}
+                               value={this.state.question}
+                               onChange={(element) => this.setState({question: element.value})}></TextInput>
+                    <TextInput style={styles.titleInput}
+                               value={this.state.answer}
+                               onChange={(element) => this.setState({answer: element.value})}>
+                    </TextInput>
+                    <View style={styles.titleInput}>
+                        <Picker selectedValue={this.state.isCorrect}
+                                onValueChange={(element) => this.setState({isCorrect: element})}>
+                            <Picker.Item label={'Correct'} value={true} />
+                            <Picker.Item label={'Incorrect'} value={false} />
+                        </Picker>
+                    </View>
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <View style={styles.submitButton}>
+                    <TouchableOpacity style={styles.submitButton} onPress={this.addCard.bind(this)}>
                         <Text style={styles.submitText}>Submit</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -29,11 +55,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        height: '20%'
+        height: '30%'
     },
     titleInput: {
         padding: 5,
-        color: 'lightgray',
         fontSize: 20,
         margin: 5,
         borderRadius: 3,
@@ -44,7 +69,7 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         alignItems: 'center',
         width: '100%',
-        height: '60%',
+        height: '50%',
     },
     submitButton: {
         borderRadius: 3,
@@ -63,4 +88,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AddCard;
+export default connect()(AddCard);

@@ -1,5 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, View, AsyncStorage, TouchableOpacity} from "react-native";
+import {StyleSheet, Text, TextInput, View, TouchableOpacity} from "react-native";
+import {connect} from "react-redux";
+import {handleAddDeck} from "../actions/DeckActions";
 
 class NewDeck extends React.Component {
 
@@ -8,14 +10,9 @@ class NewDeck extends React.Component {
     };
 
     saveDeck() {
-        AsyncStorage.getItem('decks', (results) => {
-            const decks = JSON.parse(results);
-            const deck = {
-                title: this.state.deckTitle
-            };
-            decks.push(deck);
-            AsyncStorage.setItem('decks', decks);
-        });
+        this.props.dispatch(handleAddDeck({
+            title: this.state.deckTitle
+        }))
     }
 
     render() {
@@ -25,7 +22,8 @@ class NewDeck extends React.Component {
                     <Text style={styles.deckTitle}>What is the title of your new deck?</Text>
                     <TextInput style={styles.titleInput} onChange={(element) => this.setState({
                         deckTitle: element.value
-                    })} value={this.state.deckTitle}></TextInput>
+                    })} value={this.state.deckTitle}>
+                    </TextInput>
                 </View>
                 <View style={styles.buttonsContainer}>
                     <TouchableOpacity onChange={() => this.saveDeck()} style={styles.submitButton}>
@@ -87,4 +85,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default NewDeck;
+export default connect()(NewDeck);

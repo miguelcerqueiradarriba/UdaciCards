@@ -9,33 +9,41 @@ import DeckDetails from "./components/DeckDetails";
 import Deck from "./components/Deck";
 import AddCard from "./components/AddCard";
 import Card from "./components/Card";
+import {createStore} from 'redux';
+import { Provider } from 'react-redux';
+import middleware from './middleware'
+import reducer from './reducers/index'
 
 export default class App extends Component {
 
-    componentDidMount() {
+    render() {
+
+        const store = createStore(reducer, middleware);
 
         const sampleDeck = [{
-                title: 'Sample deck',
-                questions: [
-                    {
-                        question: 'What is React?',
-                        answer: 'A library for managing user interfaces'
-                    },
-                    {
-                        question: 'Where do you make Ajax requests in React?',
-                        answer: 'The componentDidMount lifecycle event'
-                    }
-                ]
-            }];
+            title: 'Sample deck',
+            questions: [
+                {
+                    question: 'What is React?',
+                    answer: 'A library for managing user interfaces',
+                    isCorrect: true
+                },
+                {
+                    question: 'Where do you make Ajax requests in React?',
+                    answer: 'The componentDidMount lifecycle event',
+                    isCorrect: false
+                }
+            ]
+        }];
 
-        AsyncStorage.setItem('decks', sampleDeck);
-    }
+        AsyncStorage.setItem('decks', JSON.stringify(sampleDeck));
 
-    render() {
         return (
-            <View style={styles.mainContainer}>
-                <MainNavigator/>
-            </View>
+            <Provider store={store}>
+                <View style={styles.mainContainer}>
+                    <MainNavigator/>
+                </View>
+            </Provider>
         );
     }
 }

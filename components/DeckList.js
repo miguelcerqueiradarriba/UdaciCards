@@ -1,24 +1,28 @@
 import React from 'react'
 import {View, StyleSheet, AsyncStorage} from "react-native";
 import Deck from "./Deck";
+import {connect} from "react-redux";
+import {handleAddDeck} from "../actions/DeckActions";
 
 class DeckList extends React.Component {
 
-    state = {
-        decks: []
-    };
-
     componentDidMount() {
-        AsyncStorage.getItem('decks').then((results) => {
-            this.setState({
-                decks: JSON.parse(results)
-            })
-        });
+        this.updateDecks();
     }
+
+    updateDecks() {
+        return AsyncStorage.getItem('decks').then(results => {
+            const decks = JSON.parse(results);
+
+            decks.map(deck => {
+                this.props.dispatch(handleAddDeck(deck));
+            });
+        });
+    };
 
     render() {
         const { navigate } = this.props.navigation;
-        const { decks } = this.state;
+        const { decks } = this.props;
 
         return (
             <View style={styles.deckListContainer}>
@@ -38,4 +42,10 @@ const styles = StyleSheet.create({
     }
 });
 
-export default DeckList;
+function mapStateToProps(store) {
+    return {
+        decks: store.decks
+    }
+}
+
+export default connect(mapStateToProps)(DeckList);
