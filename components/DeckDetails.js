@@ -1,13 +1,23 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from "react-native";
+import {StyleSheet, Text, View, TouchableOpacity, Animated} from "react-native";
+import {connect} from "react-redux";
+import {clearLocalNotification, setLocalNotification} from "../utils/notifications";
 
 class DeckDetails extends React.Component {
 
+    state = {
+        opacity: new Animated.Value(0)
+    };
+
     render() {
+        const { opacity } = this.state;
+
+        Animated.timing(opacity, {toValue: 1, duration: 3000}).start();
+
         const { navigate } = this.props.navigation;
-        const deck = this.props.navigation.getParam('deck', {});
+        const deck = this.props.decks[this.props.navigation.getParam('deckId')];
         return (
-            <View style={styles.detailContainer}>
+            <Animated.View style={[styles.detailContainer, {opacity}]}>
                 <View style={styles.titleContainer}>
                     <Text style={styles.deckTitle}>{deck.title}</Text>
                     <Text style={styles.deckSubtitle}>{deck.questions.length} cards</Text>
@@ -16,11 +26,14 @@ class DeckDetails extends React.Component {
                     <TouchableOpacity onPress={() => navigate('AddCard', {deck: deck})} style={styles.addCardButton}>
                         <Text style={styles.addCardText}>Add Card</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigate('Card', {deck: deck})} style={styles.startQuizButton}>
+                    <TouchableOpacity onPress={() => {
+                        navigate('Card', {deck: deck});
+                        clearLocalNotification();
+                    }} style={styles.startQuizButton}>
                         <Text style={styles.startQuizText}>Start Quiz</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </Animated.View>
         )
     }
 }
@@ -82,4 +95,10 @@ const styles = StyleSheet.create({
     }
 });
 
-export default DeckDetails;
+function mapStateToProps(store) {
+    return {
+        decks: store.decks
+    }
+}
+
+export default connect(mapStateToProps)(DeckDetails);

@@ -1,4 +1,5 @@
 import {AsyncStorage} from "react-native";
+import v4 from 'uuid'
 
 export const ADD_DECK = 'ADD_DECK';
 export const UPDATE_DECK = 'UPDATE_DECK';
@@ -12,10 +13,14 @@ function addDeck(deck) {
 
 export function handleAddDeck(deck) {
     return (dispatch) => {
-        AsyncStorage.getItem('decks', (results) => {
-            const decks = JSON.parse(results) || [];
-            decks.push(deck);
-            AsyncStorage.setItem('decks', decks);
+        deck.uuid = deck.uuid || v4();
+        deck.questions = deck.questions || [];
+        AsyncStorage.getItem('decks').then(results => {
+            const decks = JSON.parse(results) || {};
+            if (!decks[deck.uuid]) {
+                decks[deck.uuid] = deck;
+                AsyncStorage.setItem('decks', JSON.stringify(decks));
+            }
         });
         dispatch(addDeck(deck));
     }
@@ -29,19 +34,12 @@ function updateDeck(deck) {
 }
 
 export function handleUpdateDeck(deck) {
-    AsyncStorage.getItem('decks').then(results => {
-        const decks = JSON.parse(results);
-        decks.map(deckToUpdate => {
-            if (deckToUpdate.title === deck.title) {
-                deckToUpdate.questions.push({
-                    question: this.state.question,
-                    answer: this.state.answer
-                });
-                this.props.dispatch(updateDeck(deckToUpdate));
-            }
-        });
-        AsyncStorage.setItem('decks', JSON.stringify(decks)).then(() => {
-            this.props.navigation.goBack();
-        });
-    })
+    return (dispatch) => {
+        AsyncStorage.getItem('decks').then(results => {
+            const decks = JSON.parse(results);
+            decks[deck.uuid] = deck;
+            dispatch(updateDeck(deck));
+            AsyncStorage.setItem('decks', JSON.stringify(decks));
+        })
+    }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import {AsyncStorage, Picker, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {connect} from "react-redux";
-import {handleUpdateDeck, updateDeck} from "../actions/DeckActions";
+import {handleUpdateDeck} from "../actions/DeckActions";
 
 class AddCard extends React.Component {
 
@@ -12,8 +12,17 @@ class AddCard extends React.Component {
     };
 
     addCard() {
-        const deck = this.props.navigation.getParam('deck', {});
+        let deck = Object.assign({}, this.props.navigation.getParam('deck', {}));
+        deck.questions = [
+            ...deck.questions,
+            {
+                question: this.state.question,
+                answer: this.state.answer,
+                isCorrect: this.state.isCorrect
+            }
+        ];
         this.props.dispatch(handleUpdateDeck(deck));
+        this.props.navigation.goBack();
     }
 
     render() {
@@ -22,10 +31,11 @@ class AddCard extends React.Component {
                 <View style={styles.titleContainer}>
                     <TextInput style={styles.titleInput}
                                value={this.state.question}
-                               onChange={(element) => this.setState({question: element.value})}></TextInput>
+                               onChange={(element) => this.setState({question: element.nativeEvent.text})}>
+                    </TextInput>
                     <TextInput style={styles.titleInput}
                                value={this.state.answer}
-                               onChange={(element) => this.setState({answer: element.value})}>
+                               onChange={(element) => this.setState({answer: element.nativeEvent.text})}>
                     </TextInput>
                     <View style={styles.titleInput}>
                         <Picker selectedValue={this.state.isCorrect}

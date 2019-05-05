@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
+import {Text, StyleSheet, TouchableOpacity} from "react-native";
 
 class Deck extends React.Component {
 
@@ -7,7 +7,7 @@ class Deck extends React.Component {
         const { deck } = this.props;
         return (
             <TouchableOpacity style={styles.deckContainer}
-                onPress={() => this.props.navigate('DeckDetails', {deck: deck})}
+                onPress={() => this.props.navigate('DeckDetails', {deckId: deck.uuid})}
             >
                 <Text style={styles.deckTitle}>{deck.title}</Text>
                 <Text style={styles.deckSubtitle}>{deck.questions.length} cards</Text>
@@ -21,11 +21,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 30,
         width: '95%',
-        height: '100%',
         borderRadius: 4,
         borderWidth: 1,
         borderColor: '#000000',
-        margin: 1,
+        margin: 3,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -33,7 +32,7 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     deckSubtitle: {
-        color: 'lightgray',
+        color: 'gray',
         fontSize: 15
     }
 });

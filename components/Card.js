@@ -1,28 +1,32 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from "react-native";
+import {StyleSheet, Text, View, TouchableOpacity, Animated} from "react-native";
 
 class Card extends React.Component {
 
     state = {
         page: 1,
         view: 0,
-        correctAnswers: 0
+        correctAnswers: 0,
+        opacity: new Animated.Value(0)
     };
 
     next(deck, answer) {
         const isCorrect = answer === deck.questions[this.state.page - 1].isCorrect;
         this.setState({
             page: this.state.page + 1,
-            correctAnswers: isCorrect ? this.state.correctAnswers + 1 : this.state.correctAnswers
+            view: 0,
+            correctAnswers: isCorrect ? this.state.correctAnswers + 1 : this.state.correctAnswers,
+            opacity: new Animated.Value(0)
         })
     }
 
     renderQuestionView(deck) {
         return (
             <View style={styles.titleContainer}>
-                <Text style={styles.deckTitle}>{deck.questions[this.state.page - 1].question}</Text>
+                <Text style={[styles.deckTitle]}>{deck.questions[this.state.page - 1].question}</Text>
                 <TouchableOpacity onPress={() => this.setState({
-                    view: this.state.view === 0 ? 1 : 0
+                    view: this.state.view === 0 ? 1 : 0,
+                    opacity: new Animated.Value(0)
                 })}>
                     <Text style={styles.deckSubtitle}>Answer</Text>
                 </TouchableOpacity>
@@ -31,11 +35,16 @@ class Card extends React.Component {
     }
 
     renderAnswerView(deck) {
+        const { opacity } = this.state;
+
+        Animated.timing(opacity, {toValue: 1, duration: 3000}).start();
+
         return (
             <View style={styles.titleContainer}>
-                <Text style={styles.deckTitle}>{deck.questions[this.state.page - 1].answer}</Text>
+                <Animated.Text style={[styles.deckTitle, {opacity}]}>{deck.questions[this.state.page - 1].answer}</Animated.Text>
                 <TouchableOpacity onPress={() => this.setState({
-                    view: this.state.view === 0 ? 1 : 0
+                    view: this.state.view === 0 ? 1 : 0,
+                    opacity: new Animated.Value(0)
                 })}>
                     <Text style={styles.deckSubtitle}>Question</Text>
                 </TouchableOpacity>
@@ -52,6 +61,14 @@ class Card extends React.Component {
                     </Text>
                 </View>
                 <View style={styles.buttonsContainer}>
+                    <TouchableOpacity onPress={() => this.setState({
+                        page: 1,
+                        view: 0,
+                        correctAnswers: 0,
+                        opacity: new Animated.Value(0)
+                    })} style={styles.goBackButton}>
+                        <Text style={styles.goBackText}>Restart quiz</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => this.props.navigation.goBack(null)} style={styles.goBackButton}>
                         <Text style={styles.goBackText}>Back to deck</Text>
                     </TouchableOpacity>
@@ -81,7 +98,6 @@ class Card extends React.Component {
                         <Text style={styles.incorrectText}>Incorrect</Text>
                     </TouchableOpacity>
                 </View>
-                <Text>{JSON.stringify(deck)}</Text>
             </View>
         );
     }

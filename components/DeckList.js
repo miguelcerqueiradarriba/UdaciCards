@@ -13,21 +13,20 @@ class DeckList extends React.Component {
     updateDecks() {
         return AsyncStorage.getItem('decks').then(results => {
             const decks = JSON.parse(results);
-
-            decks.map(deck => {
-                this.props.dispatch(handleAddDeck(deck));
+            Object.keys(decks).map(key => {
+                this.props.dispatch(handleAddDeck(decks[key]));
             });
         });
     };
 
     render() {
         const { navigate } = this.props.navigation;
-        const { decks } = this.props;
+        const decks = Object.values(this.props.decks);
 
         return (
             <View style={styles.deckListContainer}>
                 {decks && decks.map(deck => (
-                    <Deck deck={deck} navigate={navigate}/>
+                    <Deck deck={deck} navigate={navigate} key={deck.uuid}/>
                 ))}
             </View>
         )

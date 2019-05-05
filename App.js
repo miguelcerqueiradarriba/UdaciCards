@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, AsyncStorage} from 'react-native';
+import {StyleSheet, View, AsyncStorage, StatusBar} from 'react-native';
 import NewDeck from "./components/NewDeck";
 import DeckList from "./components/DeckList";
 import { black, white } from './utils/colors';
@@ -11,32 +11,20 @@ import AddCard from "./components/AddCard";
 import Card from "./components/Card";
 import {createStore} from 'redux';
 import { Provider } from 'react-redux';
-import middleware from './middleware'
-import reducer from './reducers/index'
+import middleware from './middleware';
+import reducer from './reducers/index';
+import v4 from 'uuid';
+import {setLocalNotification} from "./utils/notifications";
 
 export default class App extends Component {
+
+    componentDidMount() {
+        setLocalNotification();
+    }
 
     render() {
 
         const store = createStore(reducer, middleware);
-
-        const sampleDeck = [{
-            title: 'Sample deck',
-            questions: [
-                {
-                    question: 'What is React?',
-                    answer: 'A library for managing user interfaces',
-                    isCorrect: true
-                },
-                {
-                    question: 'Where do you make Ajax requests in React?',
-                    answer: 'The componentDidMount lifecycle event',
-                    isCorrect: false
-                }
-            ]
-        }];
-
-        AsyncStorage.setItem('decks', JSON.stringify(sampleDeck));
 
         return (
             <Provider store={store}>
@@ -70,15 +58,9 @@ const Tabs = TabNavigator({
     tabBarOptions: {
         activeTintColor: black,
         style: {
+            marginTop: StatusBar.currentHeight,
             height: 56,
-            backgroundColor: white,
-            shadowColor: 'rgba(0, 0, 0, 0.24)',
-            shadowOffset: {
-                width: 0,
-                height: 3
-            },
-            shadowRadius: 6,
-            shadowOpacity: 1
+            backgroundColor: white
         }
     }
 });

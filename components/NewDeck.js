@@ -2,17 +2,22 @@ import React from 'react';
 import {StyleSheet, Text, TextInput, View, TouchableOpacity} from "react-native";
 import {connect} from "react-redux";
 import {handleAddDeck} from "../actions/DeckActions";
+import v4 from 'uuid';
 
 class NewDeck extends React.Component {
 
     state = {
-        deckTitle: 'Deck title'
+        deckTitle: 'My new deck'
     };
 
     saveDeck() {
+        const uuid = v4();
         this.props.dispatch(handleAddDeck({
+            uuid: uuid,
             title: this.state.deckTitle
-        }))
+        }));
+        this.props.navigation.goBack();
+        this.props.navigation.navigate('DeckDetails', {deckId: uuid});
     }
 
     render() {
@@ -21,12 +26,12 @@ class NewDeck extends React.Component {
                 <View style={styles.titleContainer}>
                     <Text style={styles.deckTitle}>What is the title of your new deck?</Text>
                     <TextInput style={styles.titleInput} onChange={(element) => this.setState({
-                        deckTitle: element.value
+                        deckTitle: element.nativeEvent.text
                     })} value={this.state.deckTitle}>
                     </TextInput>
                 </View>
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity onChange={() => this.saveDeck()} style={styles.submitButton}>
+                    <TouchableOpacity onPress={this.saveDeck.bind(this)} style={styles.submitButton}>
                         <Text style={styles.submitText}>Submit</Text>
                     </TouchableOpacity>
                 </View>
@@ -55,7 +60,6 @@ const styles = StyleSheet.create({
     },
     titleInput: {
         padding: 5,
-        color: 'lightgray',
         fontSize: 20,
         margin: 5,
         borderRadius: 3,
